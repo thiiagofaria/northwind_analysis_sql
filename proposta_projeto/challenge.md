@@ -6,3 +6,5 @@
     * Agora somente os clientes que estão nos grupos 3, 4 e 5 para que seja feita uma análise de Marketing especial com eles
     * Identificar os 10 produtos mais vendidos.
     * Quais clientes do Reino Unido pagaram mais de 1000 dólares?
+
+Utilizar o banco de dados db_northwind (file de criação nesta pasta) para responder as perguntas acima.
