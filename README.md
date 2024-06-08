@@ -1,4 +1,4 @@
-# Análise DB Nortwind
+# Análise DB Northwind
 
 ## Questions a serem respondidas:
    * Qual foi o total de receitas no ano de 1997?
@@ -51,3 +51,78 @@ Configure um novo servidor no PgAdmin:
         * Nome de usuário: postgres
         * Senha: postgres Em seguida, selecione o banco de dados "northwind".
 
+
+## Criação das views (Relatórios)
+
+1. **Relatórios de Receita**
+    
+    * Qual foi o total de receitas no ano de 1997?
+
+    ```sql
+    CREATE VIEW total_revenues_1997_view AS
+    SELECT SUM((order_details.unit_price) * order_details.quantity * (1.0 - order_details.discount)) AS total_revenues_1997
+    FROM order_details
+    INNER JOIN (
+        SELECT order_id 
+        FROM orders 
+        WHERE EXTRACT(YEAR FROM order_date) = '1997'
+    ) AS ord 
+    ON ord.order_id = order_details.order_id;
+    ```
+
+2.  **Análise de crescimento mensal e o cálculo de YTD**
+
+    ```sql
+    CREATE VIEW view_receitas_acumuladas AS
+    WITH ReceitasMensais AS (
+        SELECT
+            EXTRACT(YEAR FROM orders.order_date) AS Ano,
+            EXTRACT(MONTH FROM orders.order_date) AS Mes,
+            SUM(order_details.unit_price * order_details.quantity * (1.0 - order_details.discount)) AS Receita_Mensal
+        FROM
+            orders
+        INNER JOIN
+            order_details ON orders.order_id = order_details.order_id
+        GROUP BY
+            EXTRACT(YEAR FROM orders.order_date),
+            EXTRACT(MONTH FROM orders.order_date)
+    ),
+    ReceitasAcumuladas AS (
+        SELECT
+            Ano,
+            Mes,
+            Receita_Mensal,
+            SUM(Receita_Mensal) OVER (PARTITION BY Ano ORDER BY Mes) AS Receita_YTD
+        FROM
+            ReceitasMensais
+    )
+    SELECT
+        Ano,
+        Mes,
+        Receita_Mensal,
+        Receita_Mensal - LAG(Receita_Mensal) OVER (PARTITION BY Ano ORDER BY Mes) AS Diferenca_Mensal,
+        Receita_YTD,
+        (Receita_Mensal - LAG(Receita_Mensal) OVER (PARTITION BY Ano ORDER BY Mes)) / LAG(Receita_Mensal) OVER (PARTITION BY Ano ORDER BY Mes) * 100 AS Percentual_Mudanca_Mensal
+    FROM
+        ReceitasAcumuladas
+    ORDER BY
+        Ano, Mes;
+    ```
+
+3. **Qual é o valor total que cada cliente já pagou até agora?**
+
+    ```sql
+    CREATE VIEW view_total_revenues_per_customer AS
+    SELECT 
+        customers.company_name, 
+        SUM(order_details.unit_price * order_details.quantity * (1.0 - order_details.discount)) AS total
+    FROM 
+        customers
+    INNER JOIN 
+        orders ON customers.customer_id = orders.customer_id
+    INNER JOIN 
+        order_details ON order_details.order_id = orders.order_id
+    GROUP BY 
+        customers.company_name
+    ORDER BY 
+        total DESC;
