@@ -126,3 +126,7 @@ Configure um novo servidor no PgAdmin:
         customers.company_name
     ORDER BY 
         total DESC;
+
+4. **Separe os clientes em 5 grupos de acordo com o valor pago por cliente**
+    
+
