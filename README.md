@@ -128,5 +128,15 @@ Configure um novo servidor no PgAdmin:
         total DESC;
 
 4. **Separe os clientes em 5 grupos de acordo com o valor pago por cliente**
-    
+
+    ```sql
+    CREATE VIEW view_total_revenues_per_customer_group AS
+    select
+        c.company_name as nome_cliente,
+        sum(od.unit_price * od.quantity * (1 - od.discount)) as valor_pago,
+        NTILE(5) OVER (ORDER BY sum(od.unit_price * od.quantity * (1 - od.discount)) desc) AS grupo_cliente
+    from orders as o
+    inner join customers as c on o.customer_id = c.customer_id
+    inner join order_details as od on o.order_id = od.order_id
+    group by c.company_name
 
