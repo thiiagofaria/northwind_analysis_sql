@@ -140,3 +140,21 @@ Configure um novo servidor no PgAdmin:
     inner join order_details as od on o.order_id = od.order_id
     group by c.company_name
 
+5. **Agora somente os clientes que estão nos grupos 3, 4 e 5 para que seja feita uma análise de Marketing especial com eles**
+
+    ```sql
+    CREATE VIEW clients_to_marketing AS
+    with agrupamento_clientes as (
+        select
+        c.company_name as nome_cliente,
+        sum(od.unit_price * od.quantity * (1 - od.discount)) as valor_pago,
+        NTILE(5) OVER (ORDER BY sum(od.unit_price * od.quantity * (1 - od.discount)) desc) AS grupo_cliente
+        from orders as o
+        inner join customers as c on o.customer_id = c.customer_id
+        inner join order_details as od on o.order_id = od.order_id
+        group by c.company_name
+    )
+    select
+    *
+    from agrupamento_clientes
+    where grupo_cliente in ('3','4','5')
