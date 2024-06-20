@@ -173,3 +173,22 @@ Configure um novo servidor no PgAdmin:
 
 6. **Quais clientes do Reino Unido pagaram mais de 1000 dólares**
 
+    ```sql
+    create view uk_clients_who_pay_more_then_1000 as
+        with pay_per_client as 
+        (
+        select
+            c.contact_name as contact_name,
+            o.ship_country as country,
+            sum(od.unit_price * od.quantity * (1 - od.discount)) as valor_pago
+        from orders as o
+        inner join customers as c on c.customer_id = o.customer_id
+        inner join order_details as od on od.order_id = o.order_id
+        group by c.contact_name, o.ship_country
+        )
+    select
+        contact_name,
+        valor_pago
+    from pay_per_client	
+    where country = 'UK' and valor_pago > 1000
+    order by contact_name asc
