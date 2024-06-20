@@ -1,6 +1,6 @@
 # Análise DB Northwind
 
-## Questions a serem respondidas:
+## Questões a serem respondidas:
    * Qual foi o total de receitas no ano de 1997?
    * Análise de crescimento mensal e o cálculo de YTD
    * Qual é o valor total que cada cliente já pagou até agora?
@@ -13,7 +13,7 @@
 
 ### Manualmente
 
-Utilize o arquivo SQL fornecido, `nortwhind.sql`, para popular o seu banco de dados.
+Utilize o arquivo SQL fornecido, `nortwhind.sql`, para popular o banco de dados.
 
 ### Com Docker e Docker Compose
 
@@ -24,7 +24,8 @@ Utilize o arquivo SQL fornecido, `nortwhind.sql`, para popular o seu banco de da
 
 ### Passos para configuração com Docker:
 
-1. **Iniciar o Docker Compose** Execute o comando abaixo para subir os serviços:
+1. **Iniciar o Docker Compose** 
+    Execute o comando abaixo para subir os serviços:
     
     ```
     docker-compose up
@@ -40,17 +41,17 @@ Utilize o arquivo SQL fornecido, `nortwhind.sql`, para popular o seu banco de da
     Creating db      ... done
     ```
        
-2. **Conectar o PgAdmin** Acesse o PgAdmin pelo URL: [http://localhost:5050](http://localhost:5050), com a senha `postgres`. 
+2. **Conectar o PgAdmin** 
+    Acesse o PgAdmin pelo URL: [http://localhost:5050](http://localhost:5050), com a senha `postgres`. 
 
-Configure um novo servidor no PgAdmin:
-    
-    * **Aba General**:
-        * Nome: db
-    * **Aba Connection**:
-        * Nome do host: db
-        * Nome de usuário: postgres
-        * Senha: postgres Em seguida, selecione o banco de dados "northwind".
-
+    Configure um novo servidor no PgAdmin:
+        
+        * **Aba General**:
+            * Nome: db
+        * **Aba Connection**:
+            * Nome do host: db
+            * Nome de usuário: postgres
+            * Senha: postgres Em seguida, selecione o banco de dados "northwind".
 
 ## Criação das views (Relatórios)
 
@@ -171,7 +172,7 @@ Configure um novo servidor no PgAdmin:
         group by pro.product_name
         order by somatória desc
 
-6. **Quais clientes do Reino Unido pagaram mais de 1000 dólares**
+7. **Quais clientes do Reino Unido pagaram mais de 1000 dólares**
 
     ```sql
     create view uk_clients_who_pay_more_then_1000 as
@@ -192,3 +193,50 @@ Configure um novo servidor no PgAdmin:
     from pay_per_client	
     where country = 'UK' and valor_pago > 1000
     order by contact_name asc
+
+## Resultados / Respostas
+
+    Após a criação das views, basta seguir as querys abaixo para responder cada pergunta:
+
+   1. Qual foi o total de receitas no ano de 1997?
+    ```sql
+        select * from total_revenues_1997_view
+
+   2. Análise de crescimento mensal e o cálculo de YTD
+    ```sql
+        select * from view_receitas_acumuladas
+
+
+   3. Qual é o valor total que cada cliente já pagou até agora?
+    ```sql
+        select * from view_total_revenues_per_customer
+
+   4. Separe os clientes em 5 grupos de acordo com o valor pago por cliente
+    ```sql
+        select * from view_total_revenues_per_customer_group
+
+   5. Agora somente os clientes que estão nos grupos 3, 4 e 5 para que seja feita uma análise de Marketing especial com eles
+    ```sql
+        select * from clients_to_marketing
+
+   6. Identificar os 10 produtos mais vendidos.
+    ```sql
+        select * from view top_10_products
+
+   7. Quais clientes do Reino Unido pagaram mais de 1000 dólares?
+    ```sql
+        select * from view uk_clients_who_pay_more_then_1000
+
+
+
+!!. **Parar o Docker Compose** Pare o servidor iniciado pelo comando `docker-compose up` usando Ctrl-C e remova os contêineres com:
+    
+    ```
+    docker-compose down
+    ```
+    
+!!. **Arquivos e Persistência** Suas modificações nos bancos de dados Postgres serão persistidas no volume Docker `postgresql_data` e podem ser recuperadas reiniciando o Docker Compose com `docker-compose up`. Para deletar os dados do banco, execute:
+    
+    ```
+    docker-compose down -v
+    ```
