@@ -196,7 +196,7 @@ Utilize o arquivo SQL fornecido, `nortwhind.sql`, para popular o banco de dados.
 
 ## Resultados / Respostas
 
-    Após a criação das views, basta seguir as querys abaixo para responder cada pergunta:
+Após a criação das views, basta seguir as querys abaixo para responder cada pergunta:
 
    1. Qual foi o total de receitas no ano de 1997?
     ```sql
