@@ -158,3 +158,18 @@ Configure um novo servidor no PgAdmin:
     *
     from agrupamento_clientes
     where grupo_cliente in ('3','4','5')
+
+6. **Identificar os 10 produtos mais vendidos.**
+
+    ```sql
+    create view top_10_products as
+        select 
+        pro.product_name,
+        sum(od.unit_price * od.quantity * (1 - od.discount)) as somatória
+        from order_details as od
+        inner join products as pro on od.product_id = pro.product_id
+        group by pro.product_name
+        order by somatória desc
+
+6. **Quais clientes do Reino Unido pagaram mais de 1000 dólares**
+
