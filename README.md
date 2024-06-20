@@ -199,33 +199,33 @@ Utilize o arquivo SQL fornecido, `nortwhind.sql`, para popular o banco de dados.
 Após a criação das views, basta seguir as querys abaixo para responder cada pergunta:
 
    1. Qual foi o total de receitas no ano de 1997?
-    ```sql
-        select * from total_revenues_1997_view
+        ```sql
+            select * from total_revenues_1997_view
 
    2. Análise de crescimento mensal e o cálculo de YTD
-    ```sql
-        select * from view_receitas_acumuladas
+        ```sql
+            select * from view_receitas_acumuladas
 
 
    3. Qual é o valor total que cada cliente já pagou até agora?
-    ```sql
-        select * from view_total_revenues_per_customer
+        ```sql
+            elect * from view_total_revenues_per_customer
 
    4. Separe os clientes em 5 grupos de acordo com o valor pago por cliente
-    ```sql
-        select * from view_total_revenues_per_customer_group
+        ```sql
+            select * from view_total_revenues_per_customer_group
 
    5. Agora somente os clientes que estão nos grupos 3, 4 e 5 para que seja feita uma análise de Marketing especial com eles
-    ```sql
-        select * from clients_to_marketing
+        ```sql
+            select * from clients_to_marketing
 
    6. Identificar os 10 produtos mais vendidos.
-    ```sql
-        select * from view top_10_products
+        ```sql
+            select * from view top_10_products
 
    7. Quais clientes do Reino Unido pagaram mais de 1000 dólares?
-    ```sql
-        select * from view uk_clients_who_pay_more_then_1000
+        ```sql
+            select * from view uk_clients_who_pay_more_then_1000
 
 
 
